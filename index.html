@@ -1,0 +1,505 @@
+<!-- Template based off of project code provided by the kind folks at http://tympanus.net/codrops/ -->
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>RUM {JS} Performance Tracking</title>
+		<meta name="description" content="Real time user tracking for visualizing and storing performance metrics on production web pages" />
+		<meta name="keywords" content="RUM JS, Real User Monitoring, Performance, Tracking, Timing, Google, Analytics, OO Charts, Episodes, Codrop, Matthew Sniff" />
+		<meta name="author" content="Matthew Sniff" />
+		<link rel="icon" type="image/png" href="assets/favicon.png">
+		<link rel="stylesheet" type="text/css" href="assets/css/jquery.jscrollpane.custom.css" />
+		<link rel="stylesheet" type="text/css" href="assets/css/bookblock.css" />
+		<link rel="stylesheet" type="text/css" href="assets/css/custom.css" />
+		<script src="assets/js/modernizr.custom.79639.js"></script>
+		<script src="assets/js/rainbow-custom.min.js"></script>
+	</head>
+
+
+<style type="text/css">
+
+  body {
+    padding: 0;
+    margin: 0;
+    font-family: 'Europa', 'Helvetica Neue', sans-serif;
+  }
+
+  .wrapper {
+    width:700px;
+    background-color: white;
+    overflow: hidden;
+    margin: auto;
+    min-height: 800px;
+    text-align: left;
+    border-left: 1px solid rgb(217,217,217);
+    border-right: 1px solid rgb(217,217,217);
+  }
+
+  #logo {
+    width: 12%;
+    min-width: 150px!important;
+    position: absolute;
+    right:20px;
+    padding: 20px;
+    z-index: 1000;
+  }
+
+  #logo2 {
+    width: 110px;
+    float: left;
+  }
+
+  #forkme {
+    width: 130px;
+    position: fixed;
+    right:0;
+    top:0;
+  }
+
+  .navbar {
+    overflow: hidden;
+  }
+
+  .navRight {
+    width: 350px;
+    float: right;
+    padding-top: 30px;
+  }
+
+  .navRight > p {
+    float: right;
+    padding: 0 20px;
+    font-weight: 300;
+  }
+
+  .section {
+    /*background-color: rgb(250,210,210);*/
+    width:100%;
+    min-height: 100px;
+    overflow: hidden;
+    padding: 0px 40px;
+    font-size: 16px;
+    line-height: 25px;
+    font-weight: 300;
+  }
+
+  #headerP {
+  	color: rgb(0, 0, 0);
+    display: inline-block;
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: 24px;
+    float: left;
+    padding: 1em 0;
+    font-weight: normal;
+    clear: both;
+    display: block;
+    width: 100%;
+  }
+
+  .wrapper > h3 {
+    color: rgb(0, 0, 0);
+    display: inline-block;
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: 30px;
+    float: left;
+    padding-left: 20px;
+    font-weight: 300;
+  }
+
+  pre {
+    background-color: #fbebd4;
+    word-wrap: break-word;
+    margin: 20px 8%;
+    padding: 5%;
+    padding-top: 2%;
+    padding-bottom: 2%;
+    color: #221a0f;
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  pre, code {
+      font-family: 'Monaco', courier, monospace;
+  }
+
+  pre .comment {
+      color: #d6baad;
+  }
+
+  pre .variable.global, pre .variable.class, pre .variable.instance {
+      color: #dc3958; /* red */
+  }
+
+  pre .constant.numeric, pre .constant.language, pre .constant.hex-color, pre .keyword.unit {
+      color: #f79a32; /* orange */
+  }
+
+  pre .constant, pre .entity, pre .entity.class, pre .support {
+      color: #f06431; /* yellow */
+  }
+
+  pre .constant.symbol, pre .string {
+      color: #889b4a; /* green */
+  }
+
+  pre .entity.function, pre .support.css-property, pre .selector {
+      color: #8ab1b0; /* blue */
+  }
+
+  pre .keyword, pre .storage {
+      color: #98676a; /* purple */
+  }
+
+	#matthew {
+		width:20%;
+		height:10%;
+		float:left;
+		padding-right: 2%;
+	}
+
+	#matthew > img {
+		width:100%;
+		float:left;
+	}
+
+</style>
+
+	<body>
+		<div id="container" class="container">
+
+			<!--Logo-->
+			<a href="https://github.com/msniff16/">
+        <img id="logo" src="assets/rumlogo.png" />
+      </a>
+
+			<div class="menu-panel">
+				<h3>Quick Links</h3>
+				<ul id="menu-toc" class="menu-toc">
+					<li class="menu-toc-current"><a href="#item1">What is RUM?</a></li>
+					<li><a href="#item2">Additional Options</a></li>
+					<li><a href="#item3">Contributing</a></li>
+				</ul>
+			</div>
+
+			<div class="bb-custom-wrapper">
+				<div id="bb-bookblock" class="bb-bookblock">
+					<div class="bb-item" id="item1">
+						<div class="content">
+							<div class="scroller">
+								<h2>What is RUM?</h2>
+
+								<!--Section-->
+						    <p>
+								    <span id="headerP">Getting Started:</span>
+						        RUM {JS} is an awesome little project that makes it easy to time various DOM events in production environments (hence the name, "Real User Monitoring"). It is essentially a wrapper to pick up where <a style="color:red;" href="http://stevesouders.com/episodes/">Episodes.js</a> left off. It was started in the Summer of 2014 by Matthew Sniff and continues to grow (you can check out the full project source, including the code for this site, on <a style="color:red;" href="https://github.com/msniff16/rum">GitHub</a>). There are a few basics you need to know in order to get started:
+						    </p>
+
+						    <p>
+								    <span id="headerP">What to include:</span>
+						        Since RUM uses Episodes.js to time actual DOM events, you will need to include the modified source for episodes at the top of your project (and before any external scripts you may want to time) provided <a style="color:red;" href="episodes.js">here</a> as well as RUM <a style="color:red;" href="rum.js">here</a>. Next, you'll need to initialize the gloval EPISODES object in order to store the timing of your events across all parts of your application. Just inlcude the code below:
+						    </p>
+
+						    <!--Code Block-->
+<pre>
+<code data-language="javascript">
+//PLACE BEFORE ANY SCRIPTS, PREFERRABLY AT THE TOP OF YOUR HEADER CONTENT
+
+var EPISODES = EPISODES || {};
+EPISODES.q = []; // command queue
+EPISODES.times = []; // times array
+EPISODES.mark = function(mn, mt) { EPISODES.q.push( ["mark", mn, mt || new Date().getTime()] ); };
+EPISODES.measure = function(en, st, et) { EPISODES.q.push( ["measure", en, st, et || new Date().getTime()] ); };
+EPISODES.done = function(callback) { EPISODES.q.push( ["done", callback] ); };
+EPISODES.mark("firstbyte");
+(function() {
+    var epjs = document.createElement("script"); epjs.type = "text/javascript"; epjs.async = true;
+    epjs.src = "{{project-prefix}}/preso-common/libs/episodes/episodes.js";
+    var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(epjs, s);
+})();
+</code>
+</pre>
+
+							<p>
+								<span id="headerP">Timing Events:</span>
+								Timing events is super easy, wherever you would like to time a specific AJAX fetch, script load, or other event all you need to do is wrap the event with timers:
+					    </p>
+
+						    <!--Code Block-->
+<pre>
+<code data-language="javascript">
+//WRAP TIMERS AROUND THE EVENT, SCRIPT, OR FETCH YOU WOULD LIKE TO TIME
+
+//Start Measurement
+start = new Date().getTime();
+
+//{Specific event contained here}
+
+//End Measurement
+var end = new Date().getTime();
+
+//Name the event
+EPISODES.measure('name_of_timing_event', this.start, end);
+
+</code>
+</pre>
+							<p>
+								<span id="headerP">Calling RUM:</span>
+								The last step is super simple - only one line of code. Just place the following code anywhere near the end of your app's execution so that RUM has time to time the events. If you want, you can wrap it in jquery window.load() to make sure the full page has loaded, but this has known issues in Chrome. The times object by default will call RUM and dynamically create a bar chart of all your DOM events you've chosen to time. It will also return a hash map of all your timings :) Next, learn how the code is run, and how to graph not only single timings, but plot time series data with <a style="color:red;" href="http://oocharts.com/">OOcharts</a>.
+					    </p>
+
+						    <!--Code Block-->
+<pre>
+<code data-language="javascript">
+//CALL RUM
+var times = rum.getTimes();
+</code>
+</pre>
+
+
+							</div>
+						</div>
+					</div>
+
+					<div class="bb-item" id="item2">
+						<div class="content">
+							<div class="scroller">
+								<h2>Additional Options</h2>
+
+							<p>
+								<span id="headerP">Integrating with Google Analytics:</span>
+								You may have wondered why i've included google analytics code inside of RUM. You can either take this code out, or take advantage of storing your data in Google's wonderful <a style="color:red;" href="www.google.com/analytics/">analytics platform</a>. The following code will allow you to post every timing to analytics.
+					    </p>
+<pre>
+<code data-language="javascript">
+//Call Google's Analytics API to post your timing to the site speed (user timings) section of analytics. Notice the final parameter is set to 100, this is on purpose to force every timing to be pushed to analytics (not done by default). You can choose the category and other labels to suit you.
+gaq.push(['_trackTiming', category, variable, time, null /*opt_label*/, 100]);
+</code>
+</pre>
+
+
+					    <p>
+								<span id="headerP">Incorporating OOcharts:</span>
+								Why incorporate your lovely new timing code with OOcharts? Because they've made it super easy to play with Google's Core Data API (assuming you are storing data using google's analytics.js) - and will allow you to integrate google charts into your site without Oauth 2.0-authorization every single time. All you need is to include the source for oocharts.js <a style="color:red;" href="http://docs.oocharts.com/">here</a> in your code. Below is code to create a column chart for 5 days of time-series data:
+					    </p>
+
+<pre>
+<code data-language="javascript">
+//Display chart of past 5 days of data for each metric
+oo.setAPIKey({{YOUR API KEY FROM OOCHARTS}});
+oo.load(function(){
+    var bar = new oo.Column({{YOUR GOOGLE ANALYTICS SITE PROFILE id}}, "5d");
+
+    bar.addMetric("ga:avgUserTimingValue", "Timings");
+
+    bar.setDimension("ga:userTimingVariable");
+
+    bar.draw('chartOO');
+});
+</code>
+</pre>
+
+							<p>
+								<span id="headerP">Creating the GUI:</span>
+								Provided below is code for a simple modal GUI that will pop up onclick for your timing events.
+					    </p>
+<pre>
+<code data-language="html">
+<!--THE HTML-->
+
+<!--Open Rum Button-->
+<div id="openRum" class="rumButton">RUM</div>
+
+<div id="modalBackground" class="modalBackground"></div>
+
+<div id="content">
+
+  <div class="interior">
+
+    <div class="content-container"></div>
+
+  </div>
+
+</div>
+
+<!--Rum Metrics Modal-->
+<div id="modalBox" class="modalBox"></div>
+
+<!--Rum Graphs-->
+<div>
+
+<!--Header-->
+<h3>Page Performance Metrics</h3>
+
+<br />
+
+<!--Append Metrics Here-->
+<div id="metrics">
+</div>
+
+<br />
+
+<!--OO Graph-->
+<h3>5 Day Performance Average</h3>
+<div id="chartOO"></div>
+
+</div>
+</code>
+<code data-language="css">
+/*---THE CSS---*/
+
+.bar {
+  height: 15px;
+  display:block!important;
+  width: 0px;
+  margin: 10px 0;
+  background-color: rgb(99,164,255);
+}
+
+h3 {
+  font-size: 30px;
+  font-weight: 300;
+}
+
+.lineWrap {
+  width:100%;
+  clear: both;
+  overflow: hidden;
+}
+
+.line {
+  height:20px;
+  width: 2px;
+  margin: 10px 0;
+  background-color: rgb(0,0,0);
+  float: left;
+}
+
+p {
+  float: left;
+  padding-left: 5px;
+  line-height: 13px;
+}
+
+.modalBackground {
+   display: none;
+   position:fixed;
+   top:0;
+   left:0;
+   width:100%;
+   height:100%;
+   background-color:rgba(0,0,0,0.7);
+   z-index:98;
+   cursor:pointer;
+}
+
+.rumButton {
+  position: absolute;
+  right:30px;
+  top:60px;
+  width:80px;
+  height:25px;
+  color:white;
+  font-size:10px;
+  line-height:25px;
+  text-align:center;
+  background-color:rgb(99,164,255);
+  cursor:pointer;
+}
+
+.rumButton:hover {
+  background-color:rgb(119,184,255);
+}
+
+.modalBox {
+  display:none;
+  width: 900px;
+  height:440px;
+  position:fixed;
+  background-color:white;
+  left:50%;
+  overflow-y: scroll;
+  margin-left:-450px;
+  top:50%;
+  margin-top:-220px;
+  border: 1px solid rgb(238,238,238);
+  z-index:99;
+  box-shadow: rgba(0, 0, 0, 0.796078) 0px 4px 50px 0px;
+  /*background-image: url('../assets/imgs/growerapps/close.png');
+  background-size:100px;*/
+}
+
+.modalBox > div {
+  width:860px;
+  padding: 15px 10px 10px 30px;
+  overflow:hidden;
+  text-align:left!important;
+  font-weight:500;
+  font-family: Europa, sans-serif;
+}
+
+.modalBox > div h3 {
+  font-weight:300;
+}
+
+</code>
+</pre>
+
+							<p>
+								<span id="headerP">What it should look like:</span>
+								<img style="float:left;width:80%;clear:both;" src="assets/performance.png" />
+					    </p>
+
+
+							</div>
+						</div>
+					</div>
+					<div class="bb-item" id="item3">
+						<div class="content">
+							<div class="scroller">
+								<h2>Contributing</h2>
+								<p>RUM is provided completely open-source as governed by the <a style="color:red;" href="http://opensource.org/licenses/MIT">MIT License</a>. Feel free to use RUM however you like :)
+									<br /><br />
+									Fork RUM on <a style="color:red;" href="https://github.com/msniff16/rum">GitHub</a>.
+									<br /><br />
+									Contact me by <a style="color:red;" href="mailto:msniff16@gmail.com?subject=RUM%20question">email</a>.
+								</p>
+
+								<p>
+								<span id="headerP">About me:</span>
+									<span id="matthew">
+											<img src="assets/matthewsniff.jpg" />
+									</span>
+									I spend most of time working on <a style="color:red;" href="http://coversplash.com">Coversplash</a> - a provider of the most beautiful photography portfolios for photographers, with my friends. I also run a web development firm with my friends here: <a style="color:red;" href="http://mojodev.co">MOJO Dev</a>. In my free time, I enjoy the outdoors and love fishing, crabbing, swimming, and golfing. You can learn more about me on my personal site  <a style="color:red;" href="http://matthewsniff.com">here</a> or on twitter  <a style="color:red;" href="https://twitter.com/matthewsniff">here</a>.
+								</p>
+
+							</div>
+						</div>
+					</div>
+
+				<nav>
+					<span id="bb-nav-prev">&larr;</span>
+					<span id="bb-nav-next">&rarr;</span>
+				</nav>
+
+				<span id="tblcontents" class="menu-button">Table of Contents</span>
+
+			</div>
+
+		</div><!-- /container -->
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+		<script src="assets/js/jquery.mousewheel.js"></script>
+		<script src="assets/js/jquery.jscrollpane.min.js"></script>
+		<script src="assets/js/jquerypp.custom.js"></script>
+		<script src="assets/js/jquery.bookblock.js"></script>
+		<script src="assets/js/page.js"></script>
+		<script>
+			$(function() {
+
+				Page.init();
+
+			});
+		</script>
+	</body>
+</html>
